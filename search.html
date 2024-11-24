@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>票券管理系統 - 查詢票券</title>
-  <link rel="stylesheet" href="search.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+  <!-- 插入 Chart.js 和 Chart.js DataLabels 插件 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 <body>
   <div class="search-container">
@@ -13,33 +18,31 @@
 
     <!-- 選單 -->
     <div class="menu">
-      <button class="menu-btn" onclick="goToPage('home.html')">上一頁</button>
+      <button class="menu-btn" onclick="goToPage('/')">上一頁</button>
       <button class="menu-btn">客戶管理</button>
       <button class="menu-btn">新增票券</button>
       <button class="menu-btn">發放票券</button>
     </div>
 
     <!-- 查詢區塊 -->
-    <div class="search-box">
+    <form class="search-box" method="POST" action="/search">
+      {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
       <div class="input-group">
         <label for="ticketNumber">票券編號</label>
         <input type="text" id="ticketNumber" name="ticketNumber">
       </div>
-      <div class="input-group">
-        <label for="ticketName">票券名稱</label>
-        <input type="text" id="ticketName" name="ticketName">
-      </div>
       <div class="button-group">
-        <button class="clear-btn">清除資料</button>
-        <button class="search-btn" onclick="goToPage('dataview.html')">查詢票券</button>
+        <button class="clear-btn"  type="reset">清除資料</button>
+        <button class="search-btn" type="submit" >查詢票券</button>
       </div>
-    </div>
+    </form>
 
     <!-- 登出按鈕 -->
     <div class="logout-container">
-      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+      <button class="logout-btn" onclick="goToPage('login')">登出</button>
     </div>
   </div>
 </body>
 </html>
-<script src="main.js"></script>
