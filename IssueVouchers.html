@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>發送票券作業</title>
+  <link rel="stylesheet" href="issue_vouchers.css">
+</head>
+<body>
+  <div class="issue-container">
+    <!-- 標題 -->
+    <h1>發送票券作業</h1>
+
+    <!-- 表單區塊 -->
+    <div class="voucher-table">
+      <table>
+        <thead>
+          <tr>
+            <th>票券序號</th>
+            <th>接收 e-mail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 預設空白輸入列，模擬五筆空票券 -->
+          <tr>
+            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
+            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
+          </tr>
+          <tr>
+            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
+            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
+          </tr>
+          <tr>
+            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
+            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
+          </tr>
+          <tr>
+            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
+            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
+          </tr>
+          <tr>
+            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
+            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 動作按鈕 -->
+    <div class="button-group">
+      <button class="menu-btn" onclick="goToPage('home.html')">取消</button>
+      <button class="submit-btn" onclick="confirmIssue()">確認發送</button>
+    </div>
+
+    <!-- 登出按鈕 -->
+    <div class="logout-container">
+      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+    function goToPage(page) {
+      window.location.href = page;
+    }
+
+    function confirmIssue() {
+      alert("票券已成功發送！");
+    }
+  </script>
+</body>
+</html>
