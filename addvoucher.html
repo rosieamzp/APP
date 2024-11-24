@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新增票券作業</title>
+  <link rel="stylesheet" href="addvoucher.css">
+</head>
+<body>
+  <div class="addvoucher-container">
+    <!-- 標題 -->
+    <h1>新增票券作業</h1>
+
+    <!-- 表單區塊 -->
+    <div class="voucher-box">
+      <div class="info-group">
+        <label>建立人編號：</label>
+        <span class="info-value" id="creatorId"></span>
+      </div>
+      <div class="info-group">
+        <label>建立人姓名：</label>
+        <span class="info-value" id="creatorName"></span>
+      </div>
+      <div class="input-group">
+        <label for="voucherSerial">票券序號</label>
+        <input type="text" id="voucherSerial" name="voucherSerial" placeholder="請輸入票券序號">
+      </div>
+      <div class="input-group">
+        <label for="voucherName">票券名稱</label>
+        <input type="text" id="voucherName" name="voucherName" placeholder="請輸入票券名稱">
+      </div>
+      <div class="input-group">
+        <label for="startDate">生效日期</label>
+        <input type="date" id="startDate" name="startDate" onchange="validateStartDate()">
+      </div>
+      <div class="input-group">
+        <label for="endDate">截止日期</label>
+        <input type="date" id="endDate" name="endDate" onchange="validateEndDate()">
+      </div>
+      <div class="input-group">
+        <label for="quantity">數量</label>
+        <input type="number" id="quantity" name="quantity" placeholder="請輸入數量">
+      </div>
+      <div class="input-group">
+        <label for="channels">可使用通路</label>
+        <select id="channels" name="channels">
+          <option value="carrefour">家樂福</option>
+          <option value="pxmart">全聯</option>
+          <option value="hanshin">漢神百貨</option>
+        </select>
+      </div>
+      <!-- 動作按鈕 -->
+      <div class="button-group menu">
+        <button class="menu-btn" onclick="goToPage('home.html')">取消</button>
+        <button class="submit-btn" onclick="showCustomSuccessMessage()" disabled>確認新增</button>
+      </div>
+    </div>
+
+    <!-- 登出按鈕 -->
+    <div class="logout-container">
+        <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+      </div>
+      
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // 模擬登入者資訊（實際應從後端取得）
+    const loggedInUser = {
+      id: "N124020005", // 登入者編號
+      name: "陳莘惠"      // 登入者姓名
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("creatorId").textContent = loggedInUser.id;
+      document.getElementById("creatorName").textContent = loggedInUser.name;
+
+      validateForm();
+    });
+
+    function validateStartDate() {
+      const startDateInput = document.getElementById("startDate");
+      const today = new Date();
+      today.setDate(today.getDate() + 1);
+      const tomorrow = today.toISOString().split("T")[0];
+
+      if (startDateInput.value < tomorrow) {
+        Swal.fire({
+          icon: "error",
+          title: "無效的生效日期",
+          text: "生效日期不得為過去日期，最少是新增的隔日！",
+        });
+        startDateInput.value = tomorrow;
+      }
+    }
+
+    function validateEndDate() {
+      const endDateInput = document.getElementById("endDate");
+      const maxDate = "2026-12-31";
+
+      if (endDateInput.value > maxDate) {
+        Swal.fire({
+          icon: "error",
+          title: "無效的截止日期",
+          text: "截止日期不能超過 2026-12-31！",
+        });
+        endDateInput.value = maxDate;
+      }
+    }
+
+    function validateForm() {
+      const voucherSerial = document.getElementById("voucherSerial").value;
+      const voucherName = document.getElementById("voucherName").value;
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+
+      const submitBtn = document.querySelector(".submit-btn");
+      if (voucherSerial && voucherName && startDate && endDate) {
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
+      }
+    }
+
+    document.addEventListener("input", validateForm);
+
+    function showCustomSuccessMessage() {
+      Swal.fire({
+        title: "新增成功",
+        text: "已新增一筆票券",
+        icon: "success",
+        confirmButtonText: "OK"
+      });
+    }
+
+    function goToPage(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>
