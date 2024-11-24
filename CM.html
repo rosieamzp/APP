@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>客戶管理</title>
+  <link rel="stylesheet" href="CM.css">
+</head>
+<body>
+  <div class="cm-container">
+    <!-- 登出區塊 -->
+    <div class="logout-container">
+      <span class="logged-in-user">目前登入者：陳莘惠</span>
+      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+    </div>
+
+    <!-- 標題 -->
+    <h1>客戶管理</h1>
+
+    <!-- 公司名稱選擇 -->
+    <div class="input-group">
+      <label for="companyName">公司名稱</label>
+      <select id="companyName" name="companyName">
+        <option value="">請選擇公司</option>
+        <option value="CompanyA">CompanyA</option>
+        <option value="CompanyB">CompanyB</option>
+        <option value="CompanyC">CompanyC</option>
+      </select>
+    </div>
+
+    <!-- 按鈕區 -->
+    <div class="button-group">
+      <button class="menu-btn" onclick="goToPage('home.html')">回到首頁</button>
+      <button class="clear-btn" onclick="clearForm()">清除資料</button>
+      <button class="search-btn" onclick="fetchEmployeeData()">查詢</button>
+    </div>
+
+    <!-- 員工資訊表格 -->
+    <table class="employee-table">
+      <thead>
+        <tr>
+          <th>員工姓名</th>
+          <th>e-mail</th>
+        </tr>
+      </thead>
+      <tbody id="employeeData">
+        <!-- 動態插入員工資料 -->
+      </tbody>
+    </table>
+  </div>
+</body>
+<script>
+  function goToPage(page) {
+    window.location.href = page;
+  }
+
+  function clearForm() {
+    document.getElementById("companyName").value = "";
+    document.getElementById("employeeData").innerHTML = "";
+  }
+
+  function fetchEmployeeData() {
+    const companyName = document.getElementById("companyName").value;
+    if (!companyName) {
+      alert("請選擇公司名稱！");
+      return;
+    }
+
+    // 模擬取得員工資料
+    const employeeData = [
+      { name: "員工A", email: "employeeA@example.com" },
+      { name: "員工B", email: "employeeB@example.com" },
+      { name: "員工C", email: "employeeC@example.com" },
+    ];
+
+    const tableBody = document.getElementById("employeeData");
+    tableBody.innerHTML = "";
+    employeeData.forEach((employee) => {
+      const row = `<tr>
+        <td>${employee.name}</td>
+        <td>${employee.email}</td>
+      </tr>`;
+      tableBody.innerHTML += row;
+    });
+  }
+</script>
+</html>
