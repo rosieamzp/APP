@@ -17,8 +17,8 @@
     <h1>發送票券作業</h1>
 
     <!-- 表單區塊 -->
-    <form class="voucher-table" method="post" id="sendVoucher" >
-      <table>
+    <form  method="post" id="sendVoucher" >
+      <table  class="voucher-table">
         <thead>
           <tr>
             <th>票券序號</th>
@@ -28,9 +28,9 @@
         <tbody>
           {% for item in voucher %}
           <tr>
-            <td><input type="text"  name="voucherId[]" class="serial-input" value="{{item[0]}}" readonly></td>
+            <td class="readonly-cell"><input type="text"  name="voucherId[]" class="serial-input" value="{{item[0]}}" readonly></td>
             <td>
-              <select name="mails">
+              <select name="mails" class="table-select">
                 <option value="none" selected>請選擇企業員工</option>
                 {% for mail in mails %}
                 <option value="{{ mail[1] }}">{{ mail[0] }}</option>
@@ -44,76 +44,18 @@
     </form>
     <!-- 新增登入者資訊 -->
     <div class="header-container">
-      <span id="loggedInUser" class="user-info">目前登入者：陳莘惠</span>
-      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+      <span id="loggedInUser" class="user-info">目前登入者：{{session.get('user_name')}}</span>
+      <button class="logout-btn" onclick="goToPage('/logout')">登出</button>
     </div>
-    <!-- 登出按鈕 -->
-    <div class="logout-container">
-      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
-    </div>
-
-    <!-- 表格 -->
-    <table class="voucher-table">
-      <thead>
-        <tr>
-          <th>票券序號</th>
-          <th>接收 e-mail</th>
-        </tr>
-      </thead>
-      <tbody id="voucherTableBody">
-        <!-- 表格內容將由 JavaScript 自動生成 -->
-      </tbody>
-    </table>
-
     <!-- 按鈕 -->
     <div class="button-group">
       <button class="menu-btn" onclick="goToPage('/search')">返回查詢</button>
       <button class="submit-btn" onclick="confirmIssue()">確認發送</button>
     </div>
-
-    <!-- 登出按鈕 -->
-    <div class="logout-container">
-      <button class="logout-btn" onclick="goToPage('/login')">登出</button>
-    </div>
   </div>
 
   <script>
-    // 模擬票券序號列表
-    const voucherSerials = ["20240101", "20240102", "20240103", "20240104", "20240105"];
-
-    // 預設 email 選項
-    const emailOptions = ["example1@gmail.com", "example2@yahoo.com", "example3@outlook.com"];
-
-    // 畫面載入後生成表格
-    document.addEventListener("DOMContentLoaded", () => {
-      const tableBody = document.getElementById("voucherTableBody");
-
-      voucherSerials.forEach(serial => {
-        const row = document.createElement("tr");
-
-        // 票券序號欄位
-        const serialCell = document.createElement("td");
-        serialCell.textContent = serial; // 顯示票券序號
-        serialCell.className = "readonly-cell";
-
-        // 接收 e-mail 下拉選單
-        const emailCell = document.createElement("td");
-        const emailSelect = document.createElement("select");
-        emailSelect.className = "table-select";
-        emailOptions.forEach(email => {
-          const option = document.createElement("option");
-          option.value = email;
-          option.textContent = email;
-          emailSelect.appendChild(option);
-        });
-        emailCell.appendChild(emailSelect);
-
-        row.appendChild(serialCell);
-        row.appendChild(emailCell);
-        tableBody.appendChild(row);
-      });
-    });
-
+   
     // 跳轉頁面
     function goToPage(page) {
       window.location.href = page;
@@ -132,23 +74,16 @@
       const mailcount = urlParams.get('count')
       console.log(mailcount)
       if( mailcount > 0 ){
-        alert(`共 ${mailcount} 票券已成功發送！`);
-      }
-      Swal.fire({
+        Swal.fire({
         title: '發送成功',
-        text: '所有選擇的票券已成功發送！',
+        text: `共 ${mailcount} 票券已成功發送！`,
         icon: 'success',
         confirmButtonText: 'OK'
       });
-    }
+      }
+      
+    })
 
-    // 模擬登入者資訊（應從後端取得或登入時設置）
-    const loggedInUserName = "陳莘惠";
-
-    // 在頁面加載時顯示登入者名稱
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("loggedInUser").textContent = `目前登入者：${loggedInUserName}`;
-    });
   </script>
 </body>
 
