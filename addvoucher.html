@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>新增票券作業</title>
-  <link rel="stylesheet" href="addvoucher.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/addvoucher.css') }}">
 </head>
 <body>
   <div class="addvoucher-container">
@@ -13,13 +13,13 @@
 
     <!-- 表單區塊 -->
     <div class="voucher-box">
-      <div class="info-group">
+      <form class="info-group" method="post">
         <label>建立人編號：</label>
-        <span class="info-value" id="creatorId"></span>
+        <span class="info-value" id="creatorId">{{session.get('user_id')}}</span>
       </div>
       <div class="info-group">
         <label>建立人姓名：</label>
-        <span class="info-value" id="creatorName"></span>
+        <span class="info-value" id="creatorName">{{session.get('user_name')}}</span>
       </div>
       <div class="input-group">
         <label for="voucherSerial">票券序號</label>
@@ -42,6 +42,10 @@
         <input type="number" id="quantity" name="quantity" placeholder="請輸入數量">
       </div>
       <div class="input-group">
+        <label for="amount">面額</label>
+        <input type="number" id="amount" name="amount" placeholder="請輸入面額">
+      </div>
+      <div class="input-group">
         <label for="channels">可使用通路</label>
         <select id="channels" name="channels">
           <option value="carrefour">家樂福</option>
@@ -49,30 +53,34 @@
           <option value="hanshin">漢神百貨</option>
         </select>
       </div>
+      <div class="input-group">
+        <label for="company">客戶</label>
+        <select name="company">
+          {% for option in options %}
+            <option value="{{ option[0] }}">{{ option[0] }}</option>
+          {% endfor %}
+        </select>
+      </div>
       <!-- 動作按鈕 -->
       <div class="button-group menu">
-        <button class="menu-btn" onclick="goToPage('home.html')">取消</button>
-        <button class="submit-btn" onclick="showCustomSuccessMessage()" disabled>確認新增</button>
+        <button class="menu-btn" onclick="goToPage('/');return false;">返回</button>
+        <button class="submit-btn" type="submit" disabled>確認新增</button>
       </div>
-    </div>
+    </form>
 
     <!-- 登出按鈕 -->
     <div class="logout-container">
-        <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+        <button class="logout-btn" onclick="goToPage('/logout')">登出</button>
       </div>
       
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    // 模擬登入者資訊（實際應從後端取得）
-    const loggedInUser = {
-      id: "N124020005", // 登入者編號
-      name: "陳莘惠"      // 登入者姓名
-    };
+
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("creatorId").textContent = loggedInUser.id;
-      document.getElementById("creatorName").textContent = loggedInUser.name;
-
+      if( '{{exOver}}' == 't' ){
+        showCustomSuccessMessage();
+      }
       validateForm();
     });
 

@@ -30,6 +30,7 @@ def login():
         if user:
             session['logged_in'] = True
             session['user_id'] = user[0]  # 假設 user[0] 是 users 表中的 id 欄位
+            session['user_name'] = user[1]  # 假設 user[0] 是 users 表中的 id 欄位
             return redirect(url_for('home'))  # 登入成功後導向至首頁
         else:
             error = '帳號或密碼錯誤'
@@ -72,6 +73,42 @@ def search():
         return render_template('search.html')
         
 
+@app.route('/addvoucher', methods=['GET', 'POST'])
+def addvoucher():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    elif  request.method == 'POST':
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(f"INSERT INTO voucher(vid, vname, amount, effectivedate, expirydate, quantity, sid, cname, channel)	VALUES ('{request.form['voucherSerial']}', '{request.form['voucherName']}', {request.form['amount']}, '{request.form['startDate']}', '{request.form['endDate']}', {request.form['quantity']}, {session.get('user_id')}, '{request.form['company']}', '{request.form['channels']}');")
+        conn.commit()
+        sql ="INSERT INTO public.voucherissuance(vid, viseq, status, channel) VALUES (%s, %s, %s, %s);"
+        values = []
+        quantity = int(request.form['quantity'])+1  # 將 quantity 轉換為整數
+        for i in range(1,quantity):
+            value = (
+                request.form['voucherSerial'],  # vid
+                i,  # viseq，從 1 開始遞增
+                '未使用',  # status
+                request.form['channels'],  # channel
+            )
+            values.append(value)
+        cur.executemany(sql, values)
+        conn.commit()
+        cur.execute("SELECT cname FROM company")
+        options  = cur.fetchall()
+        cur.close()
+        conn.close()
+        return render_template('addvoucher.html', exOver="t",options =options)
+    else:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT cname FROM company")
+        options  = cur.fetchall()
+        cur.close()
+        conn.close()
+        return render_template('addvoucher.html',options =options )
+    
 if __name__ == '__main__':
     app.secret_key = 'your_secret_key'  # 設定 session 密鑰
     app.run(debug=True)
