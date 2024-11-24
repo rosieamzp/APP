@@ -1,0 +1,161 @@
+/* 全域樣式 */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+  }
+  
+  /* 容器 */
+  .dataview-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* 標題樣式 */
+  .title {
+    font-size: 36px;
+    color: #2C5B40;
+    font-weight: bold; /* 加粗標題 */
+    margin-bottom: 30px;
+    line-height: 50px; /* 統一高度 */
+  }
+  
+  /* 選單樣式 */
+  .menu {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .menu-btn {
+    width: 140px;
+    height: 40px;
+    background-color: #2C5B40;
+    color: white;
+    border: none;
+    border-radius: 22px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .menu-btn:hover {
+    background-color: #3d6d4c;
+  }
+  
+  /* 表格樣式 */
+  .table-container {
+    margin-top: 20px;
+  }
+  
+  .table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    text-align: center;
+  }
+  
+  .table th,
+  .table td {
+    vertical-align: middle;
+    height: 50px; /* 統一表格行高度 */
+  }
+  
+  .table-primary {
+    background-color: #E3F2FD;
+    color: black;
+    font-weight: 500;
+  }
+  
+  /* 動作按鈕樣式 */
+  .action-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+  }
+  
+  .clear-btn,
+  .delete-btn,
+  .edit-btn,
+  .release-btn {
+    width: 140px;
+    height: 40px; /* 與選單按鈕一致高度 */
+    font-size: 16px;
+    border-radius: 22px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .clear-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid #D9D9D9;
+  }
+  
+  .clear-btn:hover {
+    background-color: #f3f3f3;
+  }
+  
+  .delete-btn {
+    background-color: black;
+    color: white;
+    border: none;
+  }
+  
+  .delete-btn:hover {
+    background-color: #333333;
+  }
+  
+  .edit-btn {
+    background-color: #2DAD62;
+    color: white;
+    border: none;
+  }
+  
+  .edit-btn:hover {
+    background-color: #259d56;
+  }
+  
+  .release-btn {
+    background-color: #862324;
+    color: white;
+    border: none;
+  }
+  
+  .release-btn:hover {
+    background-color: #701A1B;
+  }
+  
+  /* 登出按鈕樣式 */
+  .logout-container {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+  }
+  
+  .logout-btn {
+    width: 140px;
+    height: 40px; /* 與其他按鈕一致高度 */
+    background-color: #F5F5F5;
+    color: black;
+    border: 1px solid #D9D9D9;
+    border-radius: 22px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logout-btn:hover {
+    background-color: #e5e5e5;
+  }
+  

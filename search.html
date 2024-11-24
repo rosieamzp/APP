@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>票券管理系統 - 查詢票券</title>
+  <link rel="stylesheet" href="search.css">
+</head>
+<body>
+  <div class="search-container">
+    <!-- 標題 -->
+    <h1>票券管理系統</h1>
+
+    <!-- 選單 -->
+    <div class="menu">
+      <button class="menu-btn" onclick="goToPage('home.html')">上一頁</button>
+      <button class="menu-btn">客戶管理</button>
+      <button class="menu-btn">新增票券</button>
+      <button class="menu-btn">發放票券</button>
+    </div>
+
+    <!-- 查詢區塊 -->
+    <div class="search-box">
+      <div class="input-group">
+        <label for="ticketNumber">票券編號</label>
+        <input type="text" id="ticketNumber" name="ticketNumber">
+      </div>
+      <div class="input-group">
+        <label for="ticketName">票券名稱</label>
+        <input type="text" id="ticketName" name="ticketName">
+      </div>
+      <div class="button-group">
+        <button class="clear-btn">清除資料</button>
+        <button class="search-btn" onclick="goToPage('dataview.html')">查詢票券</button>
+      </div>
+    </div>
+
+    <!-- 登出按鈕 -->
+    <div class="logout-container">
+      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+    </div>
+  </div>
+</body>
+</html>
+<script src="main.js"></script>

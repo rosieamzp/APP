@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>票券管理系統 - 首頁</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="home-container">
+    <!-- 標題 -->
+    <h1>票券管理系統</h1>
+
+    <!-- 選單 -->
+    <div class="menu">
+      <button class="menu-btn" onclick="goToPage('search.html')">查詢票券</button>
+      <button class="menu-btn">客戶管理</button>
+      <button class="menu-btn">新增票券</button>
+      <button class="menu-btn">發放票券</button>
+    </div>
+
+    <!-- 圖表 -->
+    <div style="width: 40%; margin: auto; max-width: 400px;">
+      <canvas id="percentageChart"></canvas>
+    </div>
+
+    <!-- 登出按鈕 -->
+    <div class="logout-container">
+      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+    </div>
+  </div>
+</body>
+
+<script src="main.js"></script>
+
+<!-- 插入 Chart.js 和 Chart.js DataLabels 插件 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<script>
+  async function fetchDataAndRenderChart() {
+    try {
+      // 模擬 API 數據
+      const data = [
+        { category: '未發放', sold_count: 300 },
+        { category: '已發放', sold_count: 1700 }
+      ];
+
+      // 提取標籤 (categories) 和數據 (sold_count)
+      const labels = data.map(item => item.category);
+      const values = data.map(item => item.sold_count);
+
+      // 計算總票券數量
+      const total = values.reduce((sum, value) => sum + value, 0);
+
+      // 使用 Chart.js 繪製圖表
+      const ctx = document.getElementById('percentageChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: ['#007F7F', '#2C5B40'], // 設定圓餅圖顏色
+          }]
+        },
+        options: {
+          responsive: true, // 圖表響應式設置
+          maintainAspectRatio: true, // 保持寬高比
+          plugins: {
+            legend: {
+              position: 'top', // 圖例放置在上方
+              labels: {
+                font: {
+                  size: 12 // 圖例字體大小
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const value = context.raw;
+                  const formattedValue = value.toLocaleString(); // 將數據轉換為千分位格式
+                  const percentage = ((value / total) * 100).toFixed(2); // 百分比計算
+                  return `${formattedValue} (${percentage}%)`; // 工具提示格式
+                }
+              }
+            },
+            datalabels: {
+              color: 'white', // 標籤顏色
+              font: {
+                size: 14, // 標籤字體大小
+                weight: 'normal' // 設置為普通字體（非粗體）
+              },
+              formatter: (value, ctx) => {
+                const percentage = ((value / total) * 100).toFixed(2);
+                const formattedValue = value.toLocaleString(); // 千分位格式化
+                return `${formattedValue} (${percentage}%)`; // 顯示格式
+              }
+            }
+          }
+        },
+        plugins: [ChartDataLabels]
+      });
+    } catch (error) {
+      console.error('無法加載數據：', error);
+    }
+  }
+
+  // 初始化圖表
+  fetchDataAndRenderChart();
+</script>
+</html>
