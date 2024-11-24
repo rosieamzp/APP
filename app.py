@@ -62,17 +62,21 @@ def search():
         cur = conn.cursor()
         cur.execute(f"select * from voucher where vid='{ticketNumber}'")
         voucher = cur.fetchone()
+
+        cur.execute(f"select saccount,sname from sales where sid = '{voucher[6]}'")
+        salse = cur.fetchone()
+
         cur.close()
         conn.close()
         if voucher:
-            return render_template('dataview.html')
+            return render_template('dataview.html',voucher=voucher,salse=salse)
         else:
             error = f'查無票券編號：{ticketNumber}' 
             return render_template('search.html', error=error)
     else:
         return render_template('search.html')
         
-
+#[新增票券]
 @app.route('/addvoucher', methods=['GET', 'POST'])
 def addvoucher():
     if not session.get('logged_in'):
@@ -88,7 +92,7 @@ def addvoucher():
         for i in range(1,quantity):
             value = (
                 request.form['voucherSerial'],  # vid
-                i,  # viseq，從 1 開始遞增
+                f"{request.form['voucherSerial']}{i:04d}",  # viseq，從 1 開始遞增
                 '未使用',  # status
                 request.form['channels'],  # channel
             )
