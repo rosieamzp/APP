@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>票券管理系統 - 首頁</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <div class="home-container">
@@ -26,7 +26,7 @@
 
     <!-- 登出按鈕 -->
     <div class="logout-container">
-      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+      <button class="logout-btn" onclick="goToPage('logout.html')">登出</button>
     </div>
   </div>
 </body>
