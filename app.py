@@ -50,6 +50,28 @@ def home():
         return redirect(url_for('login'))  # 若未登入，導向至登入頁面
     return render_template('home.html')
 
+#[查詢票券]
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    elif  request.method == 'POST':
+        ticketNumber = request.form['ticketNumber']
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(f"select * from voucher where vid='{ticketNumber}'")
+        voucher = cur.fetchone()
+        cur.close()
+        conn.close()
+        if voucher:
+            return render_template('dataview.html')
+        else:
+            error = f'查無票券編號：{ticketNumber}' 
+            return render_template('search.html', error=error)
+    else:
+        return render_template('search.html')
+        
+
 if __name__ == '__main__':
     app.secret_key = 'your_secret_key'  # 設定 session 密鑰
     app.run(debug=True)
