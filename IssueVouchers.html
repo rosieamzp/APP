@@ -4,49 +4,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>發送票券作業</title>
-  <link rel="stylesheet" href="issue_vouchers.css">
+  <link rel="stylesheet" href="issueVouchers.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <div class="issue-container">
+  <div class="issue-vouchers-container">
     <!-- 標題 -->
     <h1>發送票券作業</h1>
-
-    <!-- 表單區塊 -->
-    <div class="voucher-table">
-      <table>
-        <thead>
-          <tr>
-            <th>票券序號</th>
-            <th>接收 e-mail</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- 預設空白輸入列，模擬五筆空票券 -->
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- 新增登入者資訊 -->
+    <div class="header-container">
+      <span id="loggedInUser" class="user-info">目前登入者：陳莘惠</span>
+      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+    </div>
+    <!-- 登出按鈕 -->
+    <div class="logout-container">
+      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
     </div>
 
-    <!-- 動作按鈕 -->
+    <!-- 表格 -->
+    <table class="voucher-table">
+      <thead>
+        <tr>
+          <th>票券序號</th>
+          <th>接收 e-mail</th>
+        </tr>
+      </thead>
+      <tbody id="voucherTableBody">
+        <!-- 表格內容將由 JavaScript 自動生成 -->
+      </tbody>
+    </table>
+
+    <!-- 按鈕 -->
     <div class="button-group">
       <button class="menu-btn" onclick="goToPage('home.html')">取消</button>
       <button class="submit-btn" onclick="confirmIssue()">確認發送</button>
@@ -58,15 +46,65 @@
     </div>
   </div>
 
-  <script src="main.js"></script>
   <script>
+    // 模擬票券序號列表
+    const voucherSerials = ["20240101", "20240102", "20240103", "20240104", "20240105"];
+
+    // 預設 email 選項
+    const emailOptions = ["example1@gmail.com", "example2@yahoo.com", "example3@outlook.com"];
+
+    // 畫面載入後生成表格
+    document.addEventListener("DOMContentLoaded", () => {
+      const tableBody = document.getElementById("voucherTableBody");
+
+      voucherSerials.forEach(serial => {
+        const row = document.createElement("tr");
+
+        // 票券序號欄位
+        const serialCell = document.createElement("td");
+        serialCell.textContent = serial; // 顯示票券序號
+        serialCell.className = "readonly-cell";
+
+        // 接收 e-mail 下拉選單
+        const emailCell = document.createElement("td");
+        const emailSelect = document.createElement("select");
+        emailSelect.className = "table-select";
+        emailOptions.forEach(email => {
+          const option = document.createElement("option");
+          option.value = email;
+          option.textContent = email;
+          emailSelect.appendChild(option);
+        });
+        emailCell.appendChild(emailSelect);
+
+        row.appendChild(serialCell);
+        row.appendChild(emailCell);
+        tableBody.appendChild(row);
+      });
+    });
+
+    // 跳轉頁面
     function goToPage(page) {
       window.location.href = page;
     }
 
+    // 確認發送訊息框
     function confirmIssue() {
-      alert("票券已成功發送！");
+      Swal.fire({
+        title: '發送成功',
+        text: '所有選擇的票券已成功發送！',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
     }
+
+    // 模擬登入者資訊（應從後端取得或登入時設置）
+    const loggedInUserName = "陳莘惠";
+
+    // 在頁面加載時顯示登入者名稱
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("loggedInUser").textContent = `目前登入者：${loggedInUserName}`;
+    });
   </script>
 </body>
 </html>
