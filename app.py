@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
 import psycopg2
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__, template_folder='.', static_folder='static')  # 設定模板和靜態檔案目錄
 
@@ -8,6 +11,12 @@ DB_HOST = "140.117.68.66"
 DB_NAME = "project_24"
 DB_USER = "project_24"
 DB_PASS = "x824kh"
+
+#設定mail server參數
+smtp_server = 'smtp.gmail.com'
+smtp_port = 587  # TLS 端口
+sender_email = 'weiru119@gmail.com'
+sender_password = 'xtqc qrje ydfj rans'
 
 def get_db_connection():
     conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS)
@@ -112,7 +121,56 @@ def addvoucher():
         cur.close()
         conn.close()
         return render_template('addvoucher.html',options =options )
-    
+
+#[查詢票券明細]
+@app.route('/issueVouchers', methods=['GET', 'POST'])
+def issueVouchers():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    elif  request.method == 'POST':
+        mails = request.form.getlist('mails')
+        voucherIds = request.form.getlist('voucherId[]')
+        values = []
+        sql = "update voucherissuance set status = '已發送',email=%s where viseq =%s"
+
+        for index, element in enumerate(mails):
+            if(element != 'none'):
+                print(f"Element at index {index} is {element},{voucherIds[index]} ")
+                message = MIMEMultipart()
+                message['From'] = sender_email
+                message['To'] = element
+                message['Subject'] = f'發送票券：{voucherIds[index]}'
+
+                # 加入純文字內容
+                message.attach(MIMEText('發送票券',  voucherIds[index]))
+                with smtplib.SMTP(smtp_server, smtp_port) as server:
+                        server.starttls()
+                        server.login(sender_email, sender_password)
+                        server.sendmail(sender_email, element, message.as_string())
+                values.append((element,voucherIds[index]))
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.executemany(sql, values)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('issueVouchers', vid=request.args['vid'], count=len(values)))
+    else:
+        ticketNumber = request.args['vid']
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(f"select viseq from voucherissuance where status='未使用' and vid='{ticketNumber}'")
+        voucher = cur.fetchall()
+
+        cur.execute(f"select ename,email from employee where cname in (SELECT cname FROM voucher where vid = '{ticketNumber}')")
+        mails = cur.fetchall()
+        
+        cur.close()
+        conn.close()
+        return render_template('IssueVouchers.html',voucher=voucher,mails=mails)
+
+
+
 if __name__ == '__main__':
     app.secret_key = 'your_secret_key'  # 設定 session 密鑰
     app.run(debug=True)

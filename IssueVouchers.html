@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>發送票券作業</title>
-  <link rel="stylesheet" href="issue_vouchers.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/IssueVouchers.css') }}">
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
 </head>
+
 <body>
   <div class="issue-container">
     <!-- 標題 -->
     <h1>發送票券作業</h1>
 
     <!-- 表單區塊 -->
-    <div class="voucher-table">
+    <form class="voucher-table" method="post" id="sendVoucher" >
       <table>
         <thead>
           <tr>
@@ -21,52 +24,56 @@
           </tr>
         </thead>
         <tbody>
-          <!-- 預設空白輸入列，模擬五筆空票券 -->
+          {% for item in voucher %}
           <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
+            <td><input type="text"  name="voucherId[]" class="serial-input" value="{{item[0]}}" readonly></td>
+            <td>
+              <select name="mails">
+                <option value="none" selected>請選擇企業員工</option>
+                {% for mail in mails %}
+                <option value="{{ mail[1] }}">{{ mail[0] }}</option>
+                {% endfor %}
+              </select>
+            </td>
           </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
-          <tr>
-            <td><input type="text" class="serial-input" placeholder="輸入票券序號"></td>
-            <td><input type="email" class="email-input" placeholder="輸入接收 e-mail"></td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
-    </div>
+    </form>
 
     <!-- 動作按鈕 -->
     <div class="button-group">
-      <button class="menu-btn" onclick="goToPage('home.html')">取消</button>
+      <button class="menu-btn" onclick="goToPage('/search')">返回查詢</button>
       <button class="submit-btn" onclick="confirmIssue()">確認發送</button>
     </div>
 
     <!-- 登出按鈕 -->
     <div class="logout-container">
-      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+      <button class="logout-btn" onclick="goToPage('/login')">登出</button>
     </div>
   </div>
 
-  <script src="main.js"></script>
   <script>
     function goToPage(page) {
       window.location.href = page;
     }
 
     function confirmIssue() {
-      alert("票券已成功發送！");
+      const form = document.getElementById('sendVoucher');
+      form.submit();
+      //alert("票券已成功發送！");
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const queryString = window.location.search; 
+      const urlParams = new URLSearchParams(queryString);
+      const mailcount = urlParams.get('count')
+      console.log(mailcount)
+      if( mailcount > 0 ){
+        alert(`共 ${mailcount} 票券已成功發送！`);
+      }
+    });
   </script>
 </body>
+
 </html>
