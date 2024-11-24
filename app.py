@@ -57,7 +57,7 @@ def register():
     data = request.json
     print(data)
     if Sales.query.filter_by(sMail=data['email']).first():
-        return jsonify({"message": "Email already registered"}), 400
+        return jsonify({"message": "Email already registered"}), 401
     new_user = Sales(sName=data['name'], sMail=data['email'])
     new_user.set_password(data['password'])
     db.session.add(new_user)
