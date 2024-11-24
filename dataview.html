@@ -19,9 +19,9 @@
 
     <!-- 選單 -->
     <div class="menu">
-      <button class="menu-btn" onclick="goToPage('home.html')">回到首頁</button>
+      <button class="menu-btn" onclick="goToPage('/')">回到首頁</button>
       <button class="menu-btn">客戶管理</button>
-      <button class="menu-btn">新增票券</button>
+      <button class="menu-btn" onclick="goToPage('/addvoucher')">新增票券</button>
     </div>
 
     <!-- 表格 -->
@@ -36,33 +36,33 @@
         <tbody>
           <tr>
             <td>建立人姓名</td>
-            <td>陳莘惠</td>
-            <td>建立人編號</td>
-            <td>N124020005</td>
+            <td>{{salse[1]}}</td>
+            <td>建立人帳號</td>
+            <td>{{salse[0]}}</td>
           </tr>
           <tr>
-            <td>票券序號</td>
-            <td>202410140001~202410140100</td>
+            <td>票券編號</td>
+            <td>{{voucher[0]}}</td>
             <td>建立日期</td>
             <td>2024/10/14</td>
           </tr>
           <tr>
             <td>票券名稱</td>
-            <td>福利即享券</td>
+            <td>{{voucher[1]}}</td>
             <td>面額</td>
-            <td>2,000</td>
+            <td>{{voucher[3]}}</td>
           </tr>
           <tr>
             <td>生效日期</td>
-            <td>2024/11/01</td>
+            <td>{{voucher[3]}}</td>
             <td>截止日期</td>
-            <td>2025/10/31</td>
+            <td>{{voucher[4]}}</td>
           </tr>
           <tr>
             <td>數量</td>
-            <td>100</td>
+            <td>{{voucher[5]}}</td>
             <td>可使用通路</td>
-            <td>ALL</td>
+            <td>{{voucher[8]}}</td>
           </tr>
         </tbody>
       </table>
