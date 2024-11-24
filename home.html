@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>票券管理系統 - 首頁</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+  <!-- 插入 Chart.js 和 Chart.js DataLabels 插件 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
+
 <body>
   <div class="home-container">
     <!-- 標題 -->
@@ -26,16 +33,12 @@
 
     <!-- 登出按鈕 -->
     <div class="logout-container">
-      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+      <button class="logout-btn" onclick="goToPage('logout')">登出</button>
     </div>
   </div>
 </body>
 
-<script src="main.js"></script>
 
-<!-- 插入 Chart.js 和 Chart.js DataLabels 插件 -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <script>
   async function fetchDataAndRenderChart() {
@@ -110,4 +113,5 @@
   // 初始化圖表
   fetchDataAndRenderChart();
 </script>
+
 </html>

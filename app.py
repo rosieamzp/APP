@@ -1,72 +1,55 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
+import psycopg2
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://project_24:x824kh@140.117.68.66:5432/project_24'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app = Flask(__name__, template_folder='.', static_folder='static')  # 設定模板和靜態檔案目錄
 
-# 定義模型
-class Sales(db.Model):
-    __tablename__ = 'sales'
-    sId = db.Column('sid', db.Integer, primary_key=True)  # 映射到資料庫中的 sid 欄位
-    sName = db.Column(db.String(50))
-    sMail = db.Column(db.String(100), unique=True)
-    sPasswordHash = db.Column(db.String(128))
+# 設定資料庫連線參數
+DB_HOST = "140.117.68.66"
+DB_NAME = "project_24"
+DB_USER = "project_24"
+DB_PASS = "x824kh"
 
-    # 設定密碼
-    def set_password(self, password):
-        self.sPasswordHash = generate_password_hash(password)
+def get_db_connection():
+    conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS)
+    return conn
 
-    # 驗證密碼
-    def check_password(self, password):
-        return check_password_hash(self.sPasswordHash, password)
-
-
-class Voucher(db.Model):
-    __tablename__ = 'voucher'
-    vId = db.Column(db.Integer, primary_key=True)
-    vName = db.Column(db.String(100))
-    amount = db.Column(db.Numeric)
-    effectiveDate = db.Column(db.Date)
-    expiryDate = db.Column(db.Date)
-    quantity = db.Column(db.Integer)
-    sId = db.Column(db.Integer, db.ForeignKey('sales.sId'))
-
-# 初始化資料庫
-@app.cli.command("initdb")
-def initdb():
-    """初始化資料庫"""
-    db.create_all()
-    print("Database created!")
-
-# 建立業務登入 API
-@app.route('/login', methods=['POST'])
+# [登入頁]
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.json
-    sales = Sales.query.filter_by(sMail=data['email']).first()
-    if sales and sales.check_password(data['password']):
-        return jsonify({"message": "Login successful", "sId": sales.sId})
-    else:
-        return jsonify({"message": "Invalid credentials"}), 401
+    if request.method == 'POST':
+        account = request.form['account']
+        password = request.form['password']
 
-# 註冊新業務 (示例 API)
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.json
-    print(data)
-    if Sales.query.filter_by(sMail=data['email']).first():
-        return jsonify({"message": "Email already registered"}), 401
-    new_user = Sales(sName=data['name'], sMail=data['email'])
-    new_user.set_password(data['password'])
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"message": "User registered successfully"}), 201
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM sales WHERE sAccount = %s AND spassword = %s", (account, password))
+        user = cur.fetchone()
+        cur.close()
+        conn.close()
 
+        if user:
+            session['logged_in'] = True
+            session['user_id'] = user[0]  # 假設 user[0] 是 users 表中的 id 欄位
+            return redirect(url_for('home'))  # 登入成功後導向至首頁
+        else:
+            error = '帳號或密碼錯誤'
+            return render_template('login.html', error=error)
 
-# 測試 API
+    return render_template('login.html')
+
+#[登出]
+@app.route('/logout')
+def logout():
+    session.clear()
+    return render_template('login.html')
+
+#[首頁]
+@app.route('/')
+def home():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    return render_template('home.html')
+
 if __name__ == '__main__':
+    app.secret_key = 'your_secret_key'  # 設定 session 密鑰
     app.run(debug=True)
-
-
