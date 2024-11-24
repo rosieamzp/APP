@@ -14,7 +14,7 @@ def get_db_connection():
     return conn
 
 # [登入頁]
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         account = request.form['account']
@@ -44,7 +44,7 @@ def logout():
     return render_template('login.html')
 
 #[首頁]
-@app.route('/home')
+@app.route('/')
 def home():
     if not session.get('logged_in'):
         return redirect(url_for('login'))  # 若未登入，導向至登入頁面
