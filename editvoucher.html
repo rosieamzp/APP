@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編輯票券</title>
+  <link rel="stylesheet" href="editvoucher.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <div class="editvoucher-container">
+    <!-- 標題 -->
+    <h1>編輯票券</h1>
+
+    <!-- 建立人資訊 -->
+    <div class="info-container">
+      <div class="info-group">
+        <span class="info-label">建立人編號：</span>
+        <span class="info-value" id="creatorId">N124020005</span>
+      </div>
+      <div class="info-group">
+        <span class="info-label">建立人姓名：</span>
+        <span class="info-value" id="creatorName">陳莘惠</span>
+      </div>
+    </div>
+
+    <!-- 表單區塊 -->
+    <div class="form-container">
+      <div class="input-group">
+        <label for="voucherSerial">票券序號</label>
+        <input type="text" id="voucherSerial" name="voucherSerial" value="202401001" readonly>
+      </div>
+      <div class="input-group">
+        <label for="voucherName">票券名稱</label>
+        <input type="text" id="voucherName" name="voucherName" value="優惠即享券">
+      </div>
+      <div class="input-group">
+        <label for="startDate">生效日期</label>
+        <input type="date" id="startDate" name="startDate" value="2024-11-01">
+      </div>
+      <div class="input-group">
+        <label for="endDate">截止日期</label>
+        <input type="date" id="endDate" name="endDate" value="2025-10-31">
+      </div>
+      <div class="input-group">
+        <label for="quantity">數量</label>
+        <input type="number" id="quantity" name="quantity" value="100">
+      </div>
+      <div class="input-group">
+        <label for="channels">可使用通路</label>
+        <select id="channels" name="channels">
+          <option value="Carrefour">家樂福</option>
+          <option value="PXMart">全聯</option>
+          <option value="Hanshin">漢神百貨</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 按鈕區 -->
+    <div class="button-group">
+      <button class="menu-btn" onclick="goToPage('home.html')">取消</button>
+      <button class="submit-btn" onclick="submitEdit()">確認編輯</button>
+    </div>
+
+    <!-- 登出區塊 -->
+    <div class="logout-container">
+      <span class="logged-in-user">目前登入者：陳莘惠</span>
+      <button class="logout-btn" onclick="goToPage('login.html')">登出</button>
+    </div>
+  </div>
+
+  <script>
+    function goToPage(page) {
+      window.location.href = page;
+    }
+
+    function submitEdit() {
+      // 顯示SweetAlert2成功訊息
+      Swal.fire({
+        title: '編輯成功',
+        text: '票券資料已更新！',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+    }
+  </script>
+</body>
+</html>
