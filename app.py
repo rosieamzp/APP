@@ -58,7 +58,14 @@ def logout():
 def home():
     if not session.get('logged_in'):
         return redirect(url_for('login'))  # 若未登入，導向至登入頁面
-    return render_template('home.html')
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(f"select status, count(status) from voucherissuance group by status ")
+    voucher = cur.fetchall()
+    print(voucher)
+    cur.close()
+    conn.close()
+    return render_template('home.html',voucher =voucher)
 
 #[查詢票券]
 @app.route('/search', methods=['GET', 'POST'])

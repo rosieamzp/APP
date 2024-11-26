@@ -32,6 +32,7 @@
 
     <!-- 登出按鈕 -->
     <div class="logout-container">
+      <span id="loggedInUser" class="user-info">目前登入者：{{session.get('user_name')}}</span>
       <button class="logout-btn" onclick="goToPage('logout')">登出</button>
     </div>
   </div>
@@ -44,8 +45,8 @@
     try {
       // 模擬 API 數據
       const data = [
-        { category: '未發放', sold_count: 300 },
-        { category: '已發放', sold_count: 1700 }
+        { category: '{{voucher[0][0]}}', sold_count: '{{voucher[0][1]}}' },
+        { category: '{{voucher[1][0]}}', sold_count: '{{voucher[1][1]}}' }
       ];
 
       // 提取標籤 (categories) 和數據 (sold_count)

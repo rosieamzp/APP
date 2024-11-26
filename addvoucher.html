@@ -70,8 +70,9 @@
 
     <!-- 登出按鈕 -->
     <div class="logout-container">
-        <button class="logout-btn" onclick="goToPage('/logout')">登出</button>
-      </div>
+      <span id="loggedInUser" class="user-info">目前登入者：{{session.get('user_name')}}</span>
+      <button class="logout-btn" onclick="goToPage('logout')">登出</button>
+    </div>
       
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
