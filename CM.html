@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>客戶管理</title>
-  <link rel="stylesheet" href="CM.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/CM.css') }}">
 </head>
 <body>
   <div class="cm-container">
@@ -19,23 +19,23 @@
     <h1>客戶管理</h1>
 
     <!-- 公司名稱選擇 -->
+     <form method="post">
     <div class="input-group">
       <label for="companyName">公司名稱</label>
-      <select id="companyName" name="companyName">
-        <option value="">請選擇公司</option>
-        <option value="CompanyA">CompanyA</option>
-        <option value="CompanyB">CompanyB</option>
-        <option value="CompanyC">CompanyC</option>
+      <select name="company">
+        {% for option in options %}
+          <option value="{{ option[0] }}">{{ option[0] }}</option>
+        {% endfor %}
       </select>
     </div>
 
     <!-- 按鈕區 -->
     <div class="button-group">
-      <button class="menu-btn" onclick="goToPage('home.html')">回到首頁</button>
-      <button class="clear-btn" onclick="clearForm()">清除資料</button>
+      <button class="menu-btn" onclick="goToPage('/');return false;">回到首頁</button>
+      <button class="clear-btn" onclick="clearForm();return false;">清除資料</button>
       <button class="search-btn" onclick="fetchEmployeeData()">查詢</button>
     </div>
-
+  </form>
     <!-- 員工資訊表格 -->
     <table class="employee-table">
       <thead>
@@ -45,7 +45,12 @@
         </tr>
       </thead>
       <tbody id="employeeData">
-        <!-- 動態插入員工資料 -->
+        {% for employee in employees %}
+        <tr>
+          <td>{{employee[0]}}</td>
+          <td>{{employee[1]}}</td>
+        </tr>
+      {% endfor %}
       </tbody>
     </table>
   </div>

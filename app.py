@@ -62,7 +62,6 @@ def home():
     cur = conn.cursor()
     cur.execute(f"select status, count(status) from voucherissuance group by status ")
     voucher = cur.fetchall()
-    print(voucher)
     cur.close()
     conn.close()
     return render_template('home.html',voucher =voucher)
@@ -73,14 +72,25 @@ def search():
     if not session.get('logged_in'):
         return redirect(url_for('login'))  # 若未登入，導向至登入頁面
     elif  request.method == 'POST':
-        ticketNumber = request.form['ticketNumber']
+        return redirect(url_for('dataview', ticketNumber=request.form['ticketNumber']))
+    else:
+        return render_template('search.html')
+
+#查詢票券主檔
+@app.route('/dataview')
+def dataview():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    else:
+        ticketNumber = request.args.get('ticketNumber')
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(f"select * from voucher where vid='{ticketNumber}'")
         voucher = cur.fetchone()
 
-        cur.execute(f"select saccount,sname from sales where sid = '{voucher[6]}'")
-        salse = cur.fetchone()
+        if voucher:
+            cur.execute(f"select saccount,sname from sales where sid = '{voucher[6]}'")
+            salse = cur.fetchone()
 
         cur.close()
         conn.close()
@@ -89,9 +99,7 @@ def search():
         else:
             error = f'查無票券編號：{ticketNumber}' 
             return render_template('search.html', error=error)
-    else:
-        return render_template('search.html')
-        
+            
 #[新增票券]
 @app.route('/addvoucher', methods=['GET', 'POST'])
 def addvoucher():
@@ -175,6 +183,92 @@ def issueVouchers():
         cur.close()
         conn.close()
         return render_template('IssueVouchers.html',voucher=voucher,mails=mails)
+
+#[刪除]
+@app.route('/delete')
+def delete():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    ticketNumber = request.args['vid']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(f"select viseq from voucherissuance where status='已發送' and vid='{ticketNumber}' LIMIT 1;")
+    voucher = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if voucher:
+       return redirect(url_for('dataview', ticketNumber=ticketNumber, error="已有發放票券，不可刪除"))
+    else:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(f"delete from voucherissuance where vid='{ticketNumber}';")
+        conn.commit()
+        cur.execute(f"delete from voucher where vid='{ticketNumber}';")
+        conn.commit()
+        
+        cur.close()
+        conn.close()
+        return redirect(url_for('search'))
+
+#[客戶管理]
+@app.route('/cm', methods=['GET', 'POST'])
+def cm():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    elif  request.method == 'POST':
+        company = request.form['company']
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute(f"select ename,email from employee where cname = '{company}'")
+        employees = cur.fetchall()
+        cur.execute("SELECT cname FROM company")
+        options  = cur.fetchall()
+        cur.close()
+        conn.close()
+        return render_template('CM.html',options =options ,employees=employees)
+    else:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT cname FROM company")
+        options  = cur.fetchall()
+        cur.close()
+        conn.close()
+        return render_template('CM.html',options =options )
+
+#[編輯票券]
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))  # 若未登入，導向至登入頁面
+    elif  request.method == 'POST':
+        ticketNumber = request.args.get('vid')
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute(f"update voucher set vname='{request.form['voucherName']}', effectivedate='{request.form['startDate']}', expirydate='{request.form['endDate']}' where vid='{ticketNumber}'")
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('dataview', ticketNumber=ticketNumber, error="編輯成功"))
+    else:
+        ticketNumber = request.args.get('vid')
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(f"select * from voucher where vid='{ticketNumber}'")
+        voucher = cur.fetchone()
+        if voucher:
+            cur.execute(f"select saccount,sname from sales where sid = '{voucher[6]}'")
+            salse = cur.fetchone()
+        cur.execute(f"select viseq from voucherissuance where status='已發送' and vid='{ticketNumber}' LIMIT 1;")
+        voucherissuance = cur.fetchone()
+        cur.close()
+        conn.close()
+        if voucherissuance:
+            return redirect(url_for('dataview', ticketNumber=ticketNumber, error="已有發放票券，不可編輯"))
+        else:
+            return render_template('editvoucher.html',voucher =voucher,salse=salse )
 
 
 

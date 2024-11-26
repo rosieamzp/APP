@@ -20,10 +20,12 @@
     <!-- 選單 -->
     <div class="menu">
       <button class="menu-btn" onclick="goToPage('/')">回到首頁</button>
-      <button class="menu-btn">客戶管理</button>
+      <button class="menu-btn" onclick="goToPage('cm')">客戶管理</button>
       <button class="menu-btn" onclick="goToPage('/addvoucher')">新增票券</button>
     </div>
-
+    {% if request.args['error'] %}
+        <p style="color: red;">{{ request.args['error'] }}</p>
+        {% endif %}
     <!-- 表格 -->
     <div class="table-container">
       <table class="table table-bordered">
@@ -71,8 +73,8 @@
     <!-- 動作按鈕 -->
     <div class="action-buttons">
       <button class="clear-btn" onclick="goToPage('search')">上一步</button>
-      <button class="delete-btn">刪除票券</button>
-      <button class="edit-btn">編輯票券</button>
+      <button class="delete-btn" onclick="goToPage('/delete?vid={{voucher[0]}}')">刪除票券</button>
+      <button class="edit-btn" onclick="goToPage('/edit?vid={{voucher[0]}}')">編輯票券</button>
       <button class="release-btn" onclick="goToPage('/issueVouchers?vid={{voucher[0]}}')">發放票券</button>
     </div>
 
